@@ -2,6 +2,7 @@
 {
   # UEFI systemd-boot assumption. Verify firmware boot mode before install.
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 3;
   boot.loader.efi.canTouchEfiVariables = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -13,6 +14,10 @@
   time.timeZone = "Asia/Tokyo";
   i18n.defaultLocale = "en_US.UTF-8";
   console.keyMap = "us";
+
+  # man 2/3 (syscalls, libc) — man-pages + .dev出力のmanも検索対象にする
+  documentation.dev.enable = true;
+  documentation.man.generateCaches = true;
 
   services.fstrim.enable = true;
   services.upower.enable = true;
@@ -32,5 +37,7 @@
     vim
     curl
     wget
+    man-pages
+    man-pages-posix
   ];
 }

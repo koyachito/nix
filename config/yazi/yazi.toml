@@ -2,8 +2,25 @@
 pdf = [
     { run = 'zathura "$@"', orphan = true, desc = "Zathura" },
 ]
+office = [
+    { run = 'soffice "$@"', orphan = true, desc = "LibreOffice" },
+]
 
 [open]
-rules = [
+# `prepend_rules` rather than `rules`, so Yazi's preset rules (open text with
+# $EDITOR, play media, extract archives, ...) stay in place as the fallback.
+prepend_rules = [
     { mime = "application/pdf", use = "pdf" },
+    { url = "*.{doc,docx,odt,ott,rtf,xls,xlsx,ods,ots,csv,ppt,pptx,odp,otp}", use = "office" },
+    { mime = "application/vnd.openxmlformats-officedocument.*", use = "office" },
+    { mime = "application/vnd.oasis.opendocument.*", use = "office" },
+    { mime = "application/{msword,vnd.ms-excel,vnd.ms-powerpoint}", use = "office" },
+]
+
+[plugin]
+prepend_previewers = [
+    { url = "*.{doc,docx,odt,ott,rtf,xls,xlsx,ods,ots,ppt,pptx,odp,otp}", run = "office" },
+    { mime = "application/vnd.openxmlformats-officedocument.*", run = "office" },
+    { mime = "application/vnd.oasis.opendocument.*", run = "office" },
+    { mime = "application/{msword,vnd.ms-excel,vnd.ms-powerpoint}", run = "office" },
 ]

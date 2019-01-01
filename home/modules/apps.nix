@@ -2,6 +2,8 @@
 {
   # A first-pass selection from install-common.sh + install-sway.sh.
   home.packages = with pkgs; [
+	libreoffice-fresh
+	remmina
 	vlc
 	signal-desktop
 	gh
@@ -100,7 +102,7 @@
   text = ''
     #!/bin/sh
     exec ${pkgs.swaylock-plugin}/bin/swaylock-plugin -f \
-      --command "${pkgs.mpvpaper}/bin/mpvpaper -o 'loop-file=no keep-open=yes' '*' /home/koyachito/Videos/undertale.webm"
+      --command "${pkgs.mpvpaper}/bin/mpvpaper -o 'loop-file=no keep-open=yes mute=yes' '*' /home/koyachito/Videos/undertale.webm"
   '';
   };
 }
