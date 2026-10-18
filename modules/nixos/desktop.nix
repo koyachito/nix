@@ -1,9 +1,9 @@
+
 { pkgs, ... }:
 {
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true;
-    # Personal desktop tools live in Home Manager instead.
     extraPackages = [ ];
   };
 
@@ -27,7 +27,59 @@
   i18n.inputMethod = {
     enable = true;
     type = "fcitx5";
-    fcitx5.addons = with pkgs; [ fcitx5-mozc fcitx5-gtk ];
+
+    fcitx5 = {
+      addons = with pkgs; [
+        fcitx5-mozc
+        fcitx5-gtk
+      ];
+
+      settings = {
+        globalOptions."Hotkey/TriggerKeys"."0" = "Control+space";
+
+        inputMethod = {
+          GroupOrder."0" = "Default";
+
+          "Groups/0" = {
+            Name = "Default";
+            "Default Layout" = "jp";
+            DefaultIM = "mozc";
+          };
+
+          "Groups/0/Items/0".Name = "keyboard-jp";
+          "Groups/0/Items/1".Name = "mozc";
+        };
+      };
+    };
+  };
+
+  services.xremap = {
+    enable = true;
+    package = pkgs.xremap;
+    serviceMode = "user";
+    userName = "koyachito";
+    watch = true;
+
+    config = {
+      modmap = [
+        {
+          name = "Henkan to Super";
+          remap = {
+            KEY_HENKAN = "KEY_LEFTMETA";
+          };
+        }
+      ];
+
+      keymap = [
+        {
+          name = "CapsLock IME toggle";
+          exact_match = true;
+          remap = {
+            CapsLock = "C-space";
+          };
+        }
+      ];
+    };
   };
 
   fonts.packages = with pkgs; [
@@ -40,3 +92,4 @@
     NIXOS_OZONE_WL = "1";
   };
 }
+
