@@ -48,6 +48,8 @@
     cargo
     shellcheck
     shfmt
+    vscode
+    norminette
   ];
 
   # Existing, tested application settings from koyachito/dotfiles.
