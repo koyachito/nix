@@ -11,7 +11,7 @@ set $menu fuzzel
 output * bg "#2e3440" solid_color
 
 input type:keyboard {
-    xkb_layout jp
+    xkb_layout us
     repeat_delay 300
     repeat_rate 25
 }

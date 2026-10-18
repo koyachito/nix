@@ -11,8 +11,8 @@
   networking.firewall.enable = true;
 
   time.timeZone = "Asia/Tokyo";
-  i18n.defaultLocale = "ja_JP.UTF-8";
-  console.keyMap = "jp106";
+  i18n.defaultLocale = "en_US.UTF-8";
+  console.keyMap = "us";
 
   services.fstrim.enable = true;
   services.upower.enable = true;

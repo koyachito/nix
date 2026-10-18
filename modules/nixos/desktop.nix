@@ -42,11 +42,11 @@
 
           "Groups/0" = {
             Name = "Default";
-            "Default Layout" = "jp";
-            DefaultIM = "mozc";
+            "Default Layout" = "us";
+            DefaultIM = "keyboard-us";
           };
 
-          "Groups/0/Items/0".Name = "keyboard-jp";
+          "Groups/0/Items/0".Name = "keyboard-us";
           "Groups/0/Items/1".Name = "mozc";
         };
       };

@@ -3,6 +3,7 @@
   # A first-pass selection from install-common.sh + install-sway.sh.
   home.packages = with pkgs; [
     firefox
+	google-chrome
     kitty
     fuzzel
     waybar
@@ -39,7 +40,6 @@
     typst
     tmux
     clang
-    gcc
     gnumake
     cmake
     nodejs
@@ -50,6 +50,8 @@
     shfmt
     vscode
     norminette
+	discord
+	slack
   ];
 
   # Existing, tested application settings from koyachito/dotfiles.
