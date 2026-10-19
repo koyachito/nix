@@ -27,14 +27,13 @@ exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DE
 exec mako
 exec fcitx5 -d
 exec nm-applet --indicator
-exec swayidle -w timeout 900 'swaylock -f' timeout 1800 'systemctl suspend' before-sleep 'swaylock -f'
-exec_always sh -c 'pkill -x waybar 2>/dev/null || true; exec waybar -c "$HOME/.config/waybar/config" -s "$HOME/.config/waybar/style.css"'
+exec swayidle -w timeout 900 '$HOME/.local/bin/undertale-lock' timeout 1800 'systemctl suspend' before-sleep '$HOME/.local/bin/undertale-lock'
 
 bindsym $mod+Return exec $term
 bindsym $mod+d exec $menu
 bindsym $mod+space exec firefox
 bindsym $mod+y exec $term -e yazi
-bindsym $mod+Ctrl+l exec swaylock -f
+bindsym $mod+Ctrl+l exec ~/.local/bin/undertale-lock
 bindsym $mod+x exec ~/.local/bin/powermenu
 bindsym $mod+q kill
 bindsym $mod+Shift+c reload

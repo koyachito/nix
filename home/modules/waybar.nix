@@ -1,6 +1,10 @@
-
 { ... }:
 {
+  programs.waybar = {
+    enable = true;
+    systemd.enable = true;
+  };
+
   xdg.configFile."waybar/config".source =
     ../../config/waybar/config-sway;
 
@@ -12,4 +16,3 @@
     executable = true;
   };
 }
-

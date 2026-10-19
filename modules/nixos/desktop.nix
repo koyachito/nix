@@ -1,6 +1,8 @@
 
 { pkgs, ... }:
 {
+  security.pam.services.swaylock-plugin = {};
+
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true;

@@ -2,6 +2,7 @@
 {
   # A first-pass selection from install-common.sh + install-sway.sh.
   home.packages = with pkgs; [
+	yt-dlp
     firefox
 	google-chrome
     kitty
@@ -9,6 +10,8 @@
     waybar
     mako
     swaylock
+	swaylock-plugin
+	mpvpaper
     swayidle
     awww
     grim
@@ -54,6 +57,7 @@
 	discord
 	slack
 	bluetui
+	ffmpeg
   ];
 
   # Existing, tested application settings from koyachito/dotfiles.
@@ -73,5 +77,14 @@
   home.file.".local/bin/powermenu" = {
     source = ../../scripts/powermenu-nixos;
     executable = true;
+  };
+
+  home.file.".local/bin/undertale-lock" = {
+  executable = true;
+  text = ''
+    #!/bin/sh
+    exec ${pkgs.swaylock-plugin}/bin/swaylock-plugin -f \
+      --command "${pkgs.mpvpaper}/bin/mpvpaper -o 'loop-file=no keep-open=yes' '*' /home/koyachito/Videos/undertale.webm"
+  '';
   };
 }
