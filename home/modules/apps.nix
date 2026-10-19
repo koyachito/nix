@@ -24,6 +24,7 @@
     upower
     kanshi
     neovim
+	fastfetch
     git
     lazygit
     bat
