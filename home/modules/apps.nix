@@ -10,7 +10,7 @@
     mako
     swaylock
     swayidle
-    swaybg
+    awww
     grim
     slurp
     wl-clipboard
@@ -52,6 +52,7 @@
     norminette
 	discord
 	slack
+	bluetui
   ];
 
   # Existing, tested application settings from koyachito/dotfiles.

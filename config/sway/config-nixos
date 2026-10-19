@@ -8,7 +8,9 @@ set $right l
 set $term kitty
 set $menu fuzzel
 
-output * bg "#2e3440" solid_color
+# Animated GIF wallpaper
+exec awww-daemon
+exec sh -c 'until awww query >/dev/null 2>&1; do sleep 0.2; done; awww img "$HOME/Pictures/Wallpapers/wallpaper.gif"'
 
 input type:keyboard {
     xkb_layout us
