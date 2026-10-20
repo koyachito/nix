@@ -58,6 +58,8 @@
 	slack
 	bluetui
 	ffmpeg
+	python3
+	uv
   ];
 
   # Existing, tested application settings from koyachito/dotfiles.
