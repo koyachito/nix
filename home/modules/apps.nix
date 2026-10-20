@@ -60,6 +60,7 @@
 	ffmpeg
 	python3
 	uv
+	cmatrix
   ];
 
   # Existing, tested application settings from koyachito/dotfiles.
