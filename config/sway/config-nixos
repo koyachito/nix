@@ -10,7 +10,7 @@ set $menu fuzzel
 
 # Display layout: laptop left, HDMI right
 output eDP-1 pos 0 0
-output HDMI-A-1 pos 1920 0
+output HDMI-A-1 pos 1920 0 scale 1.75
 
 # Animated GIF wallpaper
 exec awww-daemon
