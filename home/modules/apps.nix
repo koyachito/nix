@@ -2,6 +2,12 @@
 {
   # A first-pass selection from install-common.sh + install-sway.sh.
   home.packages = with pkgs; [
+	signal-desktop
+	gh
+	claude-code
+	codex
+	whisper-cpp
+	unzip
 	yt-dlp
     firefox
 	google-chrome

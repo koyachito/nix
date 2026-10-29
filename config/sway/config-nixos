@@ -8,6 +8,10 @@ set $right l
 set $term kitty
 set $menu fuzzel
 
+# Display layout: laptop left, HDMI right
+output eDP-1 pos 0 0
+output HDMI-A-1 pos 1920 0
+
 # Animated GIF wallpaper
 exec awww-daemon
 exec sh -c 'until awww query >/dev/null 2>&1; do sleep 0.2; done; awww img "$HOME/Pictures/Wallpapers/wallpaper.gif"'
