@@ -2,6 +2,7 @@
 {
   # A first-pass selection from install-common.sh + install-sway.sh.
   home.packages = with pkgs; [
+	vlc
 	signal-desktop
 	gh
 	claude-code

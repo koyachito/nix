@@ -70,6 +70,12 @@
             KEY_HENKAN = "KEY_LEFTMETA";
           };
         }
+        {
+          name = "Right Alt to Super";
+          remap = {
+            KEY_RIGHTALT = "KEY_LEFTMETA";
+          };
+        }
       ];
 
       keymap = [
