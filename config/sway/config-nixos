@@ -13,8 +13,11 @@ output eDP-1 pos 0 0
 output HDMI-A-1 pos 1920 0 scale 1.75
 
 # Animated GIF wallpaper
-exec awww-daemon
-exec sh -c 'until awww query >/dev/null 2>&1; do sleep 0.2; done; awww img "$HOME/Pictures/Wallpapers/wallpaper.gif"'
+# awww-daemon has been observed to crash (socket races during session
+# restarts); the watchdog below restarts it if it never answers, so a
+# daemon crash cannot wedge the wallpaper forever.
+exec sh -c 'rm -f "$XDG_RUNTIME_DIR"/wayland-*-awww-daemon.sock 2>/dev/null; exec awww-daemon'
+exec sh -c 'tries=0; until awww query >/dev/null 2>&1; do tries=$((tries + 1)); if [ "$tries" -ge 25 ]; then awww-daemon >/dev/null 2>&1 & disown; tries=0; fi; sleep 0.2; done; awww img "$HOME/Pictures/Wallpapers/wallpaper.gif"'
 
 input type:keyboard {
     xkb_layout us

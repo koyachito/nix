@@ -22,6 +22,7 @@
     awww
     grim
     slurp
+    wf-recorder
     wl-clipboard
     wlsunset
     brightnessctl
@@ -85,6 +86,11 @@
 
   home.file.".local/bin/powermenu" = {
     source = ../../scripts/powermenu-nixos;
+    executable = true;
+  };
+
+  home.file.".local/bin/rec" = {
+    source = ../../scripts/rec;
     executable = true;
   };
 

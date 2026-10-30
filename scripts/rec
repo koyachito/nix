@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# 画面録画・録音ヘルパー (sway/Wayland + PipeWire)
+set -euo pipefail
+
+VIDEO_DIR="$HOME/Videos"
+AUDIO_DIR="$HOME/Music"
+
+ts() { date +%Y%m%d-%H%M%S; }
+
+sink_monitor() {
+  wpctl inspect @DEFAULT_AUDIO_SINK@ | sed -n 's/.*node\.name = "\(.*\)".*/\1/p' | head -1
+}
+
+usage() {
+  cat <<'EOF'
+使い方: rec <コマンド> [オプション]
+
+  rec screen [-m|-s]   全画面を録画
+  rec area   [-m|-s]   マウスで範囲選択して録画
+  rec audio            マイクを録音 (wav)
+  rec stop             実行中の録画・録音を停止
+  rec help             この使い方を表示 (-h / --help も可)
+
+オプション:
+  -m   マイク音声を含める
+  -s   システム音声(PC上で鳴っている音)を含める
+
+停止は Ctrl-C、または別端末から rec stop
+保存先: 動画 ~/Videos/  音声 ~/Music/
+EOF
+}
+
+record_screen() {
+  local mode="$1"; shift
+  local geom_args=() audio_args=()
+  local opt
+  for opt in "$@"; do
+    case "$opt" in
+      -m) audio_args=(--audio) ;;
+      -s) audio_args=("--audio=$(sink_monitor).monitor") ;;
+      -h|--help) usage; exit 0 ;;
+      *) echo "不明なオプション: $opt" >&2; usage; exit 1 ;;
+    esac
+  done
+  if [ "$mode" = area ]; then
+    geom_args=(-g "$(slurp)")
+  fi
+  mkdir -p "$VIDEO_DIR"
+  local out="$VIDEO_DIR/rec-$(ts).mp4"
+  echo "録画開始: $out (停止は Ctrl-C か 'rec stop')"
+  wf-recorder "${geom_args[@]}" "${audio_args[@]}" -f "$out"
+  echo "保存しました: $out"
+}
+
+case "${1:-}" in
+  -h|--help|help)
+    usage
+    ;;
+  screen|area)
+    mode="$1"; shift
+    record_screen "$mode" "$@"
+    ;;
+  audio)
+    mkdir -p "$AUDIO_DIR"
+    out="$AUDIO_DIR/rec-$(ts).wav"
+    echo "録音開始: $out (停止は Ctrl-C か 'rec stop')"
+    pw-record "$out"
+    echo "保存しました: $out"
+    ;;
+  stop)
+    stopped=0
+    pkill -INT -x wf-recorder 2>/dev/null && { echo "録画を停止しました"; stopped=1; } || true
+    pkill -INT -x pw-record 2>/dev/null && { echo "録音を停止しました"; stopped=1; } || true
+    [ "$stopped" = 1 ] || echo "実行中の録画・録音はありません"
+    ;;
+  *)
+    usage
+    ;;
+esac

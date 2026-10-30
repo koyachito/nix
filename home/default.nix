@@ -4,6 +4,7 @@
     ./modules/sway.nix
     ./modules/waybar.nix
     ./modules/apps.nix
+    ./modules/battery-warning.nix
     ./modules/shell.nix
   ];
 
