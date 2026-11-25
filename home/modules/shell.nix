@@ -3,6 +3,8 @@
   programs.bash.enable = true;
   programs.bash.shellAliases = {
     cb = "claude --permission-mode bypassPermissions";
+    code = "flatpak run com.vscodium.codium";
+    codium = "flatpak run com.vscodium.codium";
   };
   programs.zoxide = {
     enable = true;
