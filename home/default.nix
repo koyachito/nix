@@ -2,6 +2,7 @@
 {
   imports = [
     ./modules/sway.nix
+    ./modules/niri.nix
     ./modules/waybar.nix
     ./modules/apps.nix
     ./modules/battery-warning.nix

@@ -1,13 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Lockは素のswaylockではなくundertale-lock (swaylock-plugin) に統一。
+lock() {
+    "$HOME/.local/bin/undertale-lock"
+}
+
+# Sway / niri 両対応のログアウト。
+logout_session() {
+    if [ -n "${NIRI_SOCKET:-}" ]; then
+        niri msg action quit --skip-confirmation
+    elif [ -n "${SWAYSOCK:-}" ]; then
+        swaymsg exit
+    else
+        loginctl terminate-session "${XDG_SESSION_ID:-}"
+    fi
+}
+
 choice=$(printf ' Lock\n󰒲 Suspend\n󰜉 Reboot\n Shutdown\n Logout\n' \
     | fuzzel --dmenu --prompt='Power > ')
 
 case "$choice" in
-    ' Lock') swaylock -f ;;
-    '󰒲 Suspend') swaylock -f && systemctl suspend ;;
+    ' Lock') lock ;;
+    '󰒲 Suspend') lock && systemctl suspend ;;
     '󰜉 Reboot') systemctl reboot ;;
     ' Shutdown') systemctl poweroff ;;
-    ' Logout') swaymsg exit ;;
+    ' Logout') logout_session ;;
 esac

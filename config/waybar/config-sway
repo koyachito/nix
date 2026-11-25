@@ -3,11 +3,13 @@
   "spacing": 4,
 
   "modules-left": [
-    "sway/workspaces"
+    "sway/workspaces",
+    "niri/workspaces"
   ],
 
   "modules-center": [
-    "sway/window"
+    "sway/window",
+    "niri/window"
   ],
 
   "sway/workspaces": {
@@ -15,6 +17,15 @@
   },
 
   "sway/window": {
+    "format": "{}",
+    "max-length": 80
+  },
+
+  "niri/workspaces": {
+    "format": "{value}"
+  },
+
+  "niri/window": {
     "format": "{}",
     "max-length": 80
   },
