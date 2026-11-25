@@ -1,10 +1,7 @@
 { pkgs, pkgs-unstable, ... }:
 {
   home.packages = with pkgs; [
-    # --- GUIアプリ (nixpkgs側に残すもの。flathub組は下の services.flatpak 参照) ---
-    remmina
-    signal-desktop # 日本語入力(Electron + fcitx5 wayland)が壊れやすいので flatpak にしない
-    zathura
+    # --- GUIアプリ (nixpkgs側はシステム一体のユーティリティのみ。他は下の services.flatpak) ---
     pavucontrol
 
     # --- デスクトップ環境 (sway / niri 共用) ---
@@ -85,10 +82,10 @@
     fortune
   ];
 
-  # GUIアプリは flathub から宣言管理 (nix-flatpak)。
-  # 本家ビルド + sandbox + ディストリ更新を待たない、が狙い。
-  # slack / discord はアプリ廃止、ブラウザ版に移行済み。
-  # signal-desktop は日本語入力(Electron + fcitx5 wayland)が壊れやすいので nixpkgs 側に残す。
+  # ルール: flathub にある独立GUIは全部 flatpak。nixpkgs に残るのは技術的必然のみ
+  # (kitty = ターミナルの sandbox 化は本末転倒 + unstable ピン留め、
+  #  pavucontrol / nm-applet = システム一体のユーティリティ)。
+  # slack / discord はアプリ廃止、ブラウザ版に移行済み (Signal は Web 版が存在しない)。
   services.flatpak = {
     enable = true;
     packages = [
@@ -96,6 +93,9 @@
       "com.vscodium.codium"            # vscode の代替 (OSSビルド、拡張は Open VSX)
       "org.libreoffice.LibreOffice"
       "org.videolan.VLC"
+      "org.signal.Signal"
+      "org.remmina.Remmina"
+      "org.pwmt.zathura"
     ];
 
     # ブラウザ等はセキュリティ更新が命なので自動更新を有効化
@@ -109,6 +109,7 @@
     # `flatpak run com.vscodium.codium --enable-wayland-ime` で要確認。
     overrides = {
       "com.vscodium.codium".Environment.ELECTRON_OZONE_PLATFORM_HINT = "auto";
+      "org.signal.Signal".Environment.ELECTRON_OZONE_PLATFORM_HINT = "auto";
     };
   };
 
@@ -117,7 +118,8 @@
   xdg.configFile."nvim" = { source = ../../config/nvim; recursive = true; };
   xdg.configFile."mako" = { source = ../../config/mako; recursive = true; };
   xdg.configFile."yazi" = { source = ../../config/yazi; recursive = true; };
-  xdg.configFile."zathura" = { source = ../../config/zathura; recursive = true; };
+  # zathura は flatpak なので sandbox 内の XDG_CONFIG_HOME (~/.var/app/...) に配置する
+  home.file.".var/app/org.pwmt.zathura/config/zathura" = { source = ../../config/zathura; recursive = true; };
   xdg.configFile."pandoc" = { source = ../../config/pandoc; recursive = true; };
 
   # Correct the existing typo: 'atch-counter' -> 'match-counter'.
