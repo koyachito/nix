@@ -61,7 +61,7 @@ binds {
 
     Mod+Return { spawn "kitty"; }
     Mod+D { spawn "fuzzel"; }
-    Mod+Space { spawn "google-chrome"; }
+    Mod+Space { spawn "flatpak" "run" "org.mozilla.firefox"; }
     Mod+Y { spawn "kitty" "-e" "yazi"; }
     Mod+Ctrl+L { spawn-sh "$HOME/.local/bin/undertale-lock"; }
     Mod+X { spawn-sh "$HOME/.local/bin/powermenu"; }

@@ -38,7 +38,7 @@ exec swayidle -w timeout 900 '$HOME/.local/bin/undertale-lock' timeout 1800 'sys
 
 bindsym $mod+Return exec $term
 bindsym $mod+d exec $menu
-bindsym $mod+space exec google-chrome
+bindsym $mod+space exec flatpak run org.mozilla.firefox
 bindsym $mod+y exec $term -e yazi
 bindsym $mod+Ctrl+l exec ~/.local/bin/undertale-lock
 bindsym $mod+x exec ~/.local/bin/powermenu
