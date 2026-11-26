@@ -1,0 +1,2 @@
+-- LazyVim のデフォルト autocmd への追加
+-- デフォルト: https://www.lazyvim.org/configuration/general#auto-commands

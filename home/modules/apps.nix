@@ -1,8 +1,21 @@
-{ pkgs, pkgs-unstable, ... }:
+{ pkgs, pkgs-unstable, config, ... }:
+let
+  # コマンド名 → Flatpak アプリID。services.flatpak.packages と
+  # shell alias (コマンド名そのままで起動) の両方をここから生成する。
+  flatpakApps = {
+    firefox = "org.mozilla.firefox"; # chrome の代替。Surfingkeys は Firefox 版を入れる
+    libreoffice = "org.libreoffice.LibreOffice";
+    vlc = "org.videolan.VLC";
+    signal = "org.signal.Signal";
+    zathura = "org.pwmt.zathura";
+  };
+in
 {
   home.packages = with pkgs; [
-    # --- GUIアプリ (nixpkgs側はシステム一体のユーティリティのみ。他は下の services.flatpak) ---
+    # --- GUIアプリ (nixpkgs側はシステム一体のユーティリティと開発ツールのみ。他は下の services.flatpak) ---
     pavucontrol
+    vscodium # 開発ツールは sandbox だとホストのツールチェーンが呼べないので nixpkgs (OSSビルド、拡張は Open VSX)
+    remmina # SSHトンネルで ~/.ssh の鍵が必要になるため nixpkgs
 
     # --- デスクトップ環境 (sway / niri 共用) ---
     pkgs-unstable.kitty # 0.50.0: IME候補窓アンカー・preeditカーソル修正。26.11で stable に戻す
@@ -51,11 +64,24 @@
     uv
     rustc
     cargo
+    go
 
     # --- Lint・フォーマッタ ---
     shellcheck
     shfmt
     norminette
+
+    # --- LSP等 (NixOSではMasonのバイナリが動かないためnixで入れる) ---
+    clang-tools # clangd
+    gopls
+    gofumpt
+    gotools # goimports (LazyVim go extraの保存時フォーマットで使用)
+    pyright
+    ruff
+    lua-language-server
+    nixd
+    stylua
+    tree-sitter # nvim-treesitter (mainブランチ) のパーサビルドに必要
 
     # --- CLIユーティリティ ---
     bat
@@ -66,6 +92,7 @@
     fzf
     jq
     ripgrep
+    trash-cli # nvim (snacks explorer) のファイル削除をゴミ箱行きにする
     tree
     unzip
     yazi
@@ -82,21 +109,14 @@
     fortune
   ];
 
-  # ルール: flathub にある独立GUIは全部 flatpak。nixpkgs に残るのは技術的必然のみ
-  # (kitty = ターミナルの sandbox 化は本末転倒 + unstable ピン留め、
-  #  pavucontrol / nm-applet = システム一体のユーティリティ)。
+  # ルール: 「外部コンテンツを開く系」GUI は flatpak (sandbox の価値が高い)。
+  # nixpkgs に残るのは技術的必然のみ
+  # (kitty / codium = 開発ツールはホストのツールチェーンと一体で sandbox 化は本末転倒、
+  #  remmina = SSH鍵アクセス、pavucontrol / nm-applet = システム一体のユーティリティ)。
   # slack / discord はアプリ廃止、ブラウザ版に移行済み (Signal は Web 版が存在しない)。
   services.flatpak = {
     enable = true;
-    packages = [
-      "org.mozilla.firefox"            # chrome の代替。Surfingkeys は Firefox 版を入れる
-      "com.vscodium.codium"            # vscode の代替 (OSSビルド、拡張は Open VSX)
-      "org.libreoffice.LibreOffice"
-      "org.videolan.VLC"
-      "org.signal.Signal"
-      "org.remmina.Remmina"
-      "org.pwmt.zathura"
-    ];
+    packages = builtins.attrValues flatpakApps;
 
     # ブラウザ等はセキュリティ更新が命なので自動更新を有効化
     update.auto = {
@@ -105,17 +125,23 @@
     };
 
     # Electron系は X11(xwayland) に落ちると fcitx5 (waylandFrontend) が効かない。
-    # Wayland ネイティブで起動させる。日本語入力が効かない場合は
-    # `flatpak run com.vscodium.codium --enable-wayland-ime` で要確認。
+    # Wayland ネイティブで起動させる。
     overrides = {
-      "com.vscodium.codium".Environment.ELECTRON_OZONE_PLATFORM_HINT = "auto";
       "org.signal.Signal".Environment.ELECTRON_OZONE_PLATFORM_HINT = "auto";
+      # デフォルトは xdg-documents/xdg-download しか見えず、yazi から渡した
+      # PDF が sandbox 内で読めずに真っ黒になる。閲覧専用なので home は ro で足りる。
+      "org.pwmt.zathura".Context.filesystems = [ "home:ro" "/mnt:ro" "/run/media:ro" ];
     };
   };
 
+  # flatpak アプリをコマンド名そのままで起動できるようにする (firefox, vlc, ...)
+  programs.bash.shellAliases = builtins.mapAttrs (_: id: "flatpak run ${id}") flatpakApps;
+
   # Existing, tested application settings from koyachito/dotfiles.
   xdg.configFile."kitty" = { source = ../../config/kitty; recursive = true; };
-  xdg.configFile."nvim" = { source = ../../config/nvim; recursive = true; };
+  # nvim は out-of-store symlink にする。lazy.nvim が lazy-lock.json を書き換えるため
+  # 読み取り専用の store symlink だと更新できない。rebuild なしで設定の試行錯誤もできる。
+  xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/koyachito/nix/config/nvim";
   xdg.configFile."mako" = { source = ../../config/mako; recursive = true; };
   xdg.configFile."yazi" = { source = ../../config/yazi; recursive = true; };
   # zathura は flatpak なので sandbox 内の XDG_CONFIG_HOME (~/.var/app/...) に配置する
