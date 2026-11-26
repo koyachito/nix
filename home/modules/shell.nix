@@ -3,8 +3,8 @@
   programs.bash.enable = true;
   programs.bash.shellAliases = {
     cb = "claude --permission-mode bypassPermissions";
-    code = "flatpak run com.vscodium.codium";
-    codium = "flatpak run com.vscodium.codium";
+    # flatpak アプリの alias は apps.nix の flatpakApps から自動生成
+    code = "codium"; # codium は nixpkgs 移行済み
   };
   programs.zoxide = {
     enable = true;
