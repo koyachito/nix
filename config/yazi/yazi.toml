@@ -1,6 +1,6 @@
 [opener]
 pdf = [
-    { run = 'zathura "$@"', orphan = true, desc = "Zathura" },
+    { run = 'flatpak run org.pwmt.zathura "$@"', orphan = true, desc = "Zathura (flatpak)" },
 ]
 office = [
     { run = 'soffice "$@"', orphan = true, desc = "LibreOffice" },
