@@ -14,5 +14,11 @@
   home.stateVersion = "26.05";
 
   xdg.enable = true;
+  # user-dirs.dirs が無いと flatpak が xdg-download 等を解決できず、
+  # Firefox のダウンロードがサンドボックス内 tmpfs に落ちて終了時に消える。
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true;
+  };
   programs.home-manager.enable = true;
 }
