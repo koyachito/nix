@@ -40,6 +40,16 @@
     enable = true;
     alsa.enable = true;
     pulse.enable = true;
+
+    # Google Meet 等の通話で音が途切れる (xrun) 対策。quantum = 1回に処理する
+    # サンプル数で、既定の最小値 (32) まで下がると負荷スパイクで破綻しやすい。
+    # 1024/48kHz ≈ 21ms に引き上げてバッファ耐性を優先する (通話用途なら遅延は許容範囲)。
+    extraConfig.pipewire."10-clock-quantum" = {
+      "context.properties" = {
+        "default.clock.quantum" = 1024;
+        "default.clock.min-quantum" = 512;
+      };
+    };
   };
 
   hardware.bluetooth.enable = true;
