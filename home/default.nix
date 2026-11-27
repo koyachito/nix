@@ -5,6 +5,7 @@
     ./modules/niri.nix
     ./modules/waybar.nix
     ./modules/apps.nix
+    ./modules/orca.nix
     ./modules/battery-warning.nix
     ./modules/shell.nix
   ];
