@@ -159,13 +159,16 @@ in
   #   バージョンで feature 名が変わったため新旧併記 (未知の名前は無視されるだけで無害)
   # - VaapiVideoEncodeLinuxGL: VA-API ハードウェアエンコード (現行 Chromium での feature 名)。
   #   旧名の VaapiVideoEncoder / AcceleratedVideoEncoder も引き続き併記。
-  # - これでも chrome://gpu の Video Encode が Software only のままなら、次の一手は
-  #   --ignore-gpu-blocklist。ただし blocklist 入りドライバでの描画崩れ・クラッシュ等の
-  #   副作用がありうるため、デフォルトでは有効化せずここにメモだけ残す。
+  # - feature を入れても Video Encode が Software only のままだったため、
+  #   ignore-gpu-blocklist (GPU ブロックリスト無効化) と VaapiIgnoreDriverChecks
+  #   (Intel ドライバチェック回避) を追加して強制的に有効化している。
+  #   描画崩れ・タブクラッシュ等が出た場合は --ignore-gpu-blocklist の行と
+  #   VaapiIgnoreDriverChecks を消せば元に戻せる。
   home.file.".var/app/org.chromium.Chromium/config/chromium-flags.conf".text = ''
     --ozone-platform-hint=auto
     --enable-wayland-ime
-    --enable-features=VaapiVideoDecodeLinuxGL,VaapiVideoEncodeLinuxGL,VaapiVideoEncoder,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder
+    --ignore-gpu-blocklist
+    --enable-features=VaapiVideoDecodeLinuxGL,VaapiVideoEncodeLinuxGL,VaapiVideoEncoder,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,VaapiIgnoreDriverChecks
   '';
   xdg.configFile."pandoc" = { source = ../../config/pandoc; recursive = true; };
 
