@@ -4,6 +4,7 @@ let
   # shell alias (コマンド名そのままで起動) の両方をここから生成する。
   flatpakApps = {
     firefox = "org.mozilla.firefox"; # chrome の代替。Surfingkeys は Firefox 版を入れる
+    chromium = "org.chromium.Chromium"; # Google Meet 専用 (Firefox だと Meet の WebRTC 最適化が効きにくい)
     libreoffice = "org.libreoffice.LibreOffice";
     vlc = "org.videolan.VLC";
     signal = "org.signal.Signal";
@@ -116,7 +117,12 @@ in
   # slack / discord はアプリ廃止、ブラウザ版に移行済み (Signal は Web 版が存在しない)。
   services.flatpak = {
     enable = true;
-    packages = builtins.attrValues flatpakApps;
+    packages = builtins.attrValues flatpakApps ++ [
+      # Chromium の VA-API 動画デコードに使う Intel ドライバ拡張。GPU 検出で
+      # 自動導入されるはずだが、Meet のハードウェアデコード前提なので明示して確保する。
+      # ブランチは Chromium のランタイム (org.freedesktop.Platform//25.08) に合わせること。
+      "org.freedesktop.Platform.VAAPI.Intel//25.08"
+    ];
 
     # ブラウザ等はセキュリティ更新が命なので自動更新を有効化
     update.auto = {
@@ -146,6 +152,16 @@ in
   xdg.configFile."yazi" = { source = ../../config/yazi; recursive = true; };
   # zathura は flatpak なので sandbox 内の XDG_CONFIG_HOME (~/.var/app/...) に配置する
   home.file.".var/app/org.pwmt.zathura/config/zathura" = { source = ../../config/zathura; recursive = true; };
+  # chromium (flatpak) の起動フラグ。zathura 同様 sandbox 内の XDG_CONFIG_HOME に置く。
+  # - ozone-platform-hint=auto: Wayland ネイティブ起動 (XWayland に落とさない)
+  # - enable-wayland-ime: fcitx5 (waylandFrontend / text-input-v3) を効かせる
+  # - VaapiVideoDecodeLinuxGL / AcceleratedVideoDecodeLinuxGL: VA-API ハードウェアデコード。
+  #   バージョンで feature 名が変わったため新旧併記 (未知の名前は無視されるだけで無害)
+  home.file.".var/app/org.chromium.Chromium/config/chromium-flags.conf".text = ''
+    --ozone-platform-hint=auto
+    --enable-wayland-ime
+    --enable-features=VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder
+  '';
   xdg.configFile."pandoc" = { source = ../../config/pandoc; recursive = true; };
 
   # Correct the existing typo: 'atch-counter' -> 'match-counter'.
