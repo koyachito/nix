@@ -35,6 +35,25 @@
   services.fstrim.enable = true;
   services.upower.enable = true;
 
+  # RAM 8GB でブラウザ2つ+Orca常駐だとディスクスワップ張り付きで音切れ・カクつきが出る。
+  # 圧縮RAMスワップを挟んでディスクへの退避を遅らせる。zstdでおよそ3倍圧縮が見込めるので
+  # RAMの50% (約4GiB) を上限にしても実質コストは1.3GiB程度。
+  # priority は既定の5のままで、ディスクスワップ (-2) より高く、zramが先に使われる。
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50;
+    algorithm = "zstd";
+  };
+
+  # zram前提のチューニング。swappiness はディスク時代の既定 (60) だと圧縮退避を
+  # 渋りすぎるので引き上げる (zram単独構成の推奨は180だがディスク併用なので控えめに)。
+  # page-cluster=0 はスワップ読みの先読み (既定8ページ) を止める。zramはランダム
+  # アクセスが速いので先読みは無駄な伸長を招くだけ。
+  boot.kernel.sysctl = {
+    "vm.swappiness" = 100;
+    "vm.page-cluster" = 0;
+  };
+
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
