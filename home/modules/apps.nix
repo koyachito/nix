@@ -157,10 +157,15 @@ in
   # - enable-wayland-ime: fcitx5 (waylandFrontend / text-input-v3) を効かせる
   # - VaapiVideoDecodeLinuxGL / AcceleratedVideoDecodeLinuxGL: VA-API ハードウェアデコード。
   #   バージョンで feature 名が変わったため新旧併記 (未知の名前は無視されるだけで無害)
+  # - VaapiVideoEncodeLinuxGL: VA-API ハードウェアエンコード (現行 Chromium での feature 名)。
+  #   旧名の VaapiVideoEncoder / AcceleratedVideoEncoder も引き続き併記。
+  # - これでも chrome://gpu の Video Encode が Software only のままなら、次の一手は
+  #   --ignore-gpu-blocklist。ただし blocklist 入りドライバでの描画崩れ・クラッシュ等の
+  #   副作用がありうるため、デフォルトでは有効化せずここにメモだけ残す。
   home.file.".var/app/org.chromium.Chromium/config/chromium-flags.conf".text = ''
     --ozone-platform-hint=auto
     --enable-wayland-ime
-    --enable-features=VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder
+    --enable-features=VaapiVideoDecodeLinuxGL,VaapiVideoEncodeLinuxGL,VaapiVideoEncoder,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder
   '';
   xdg.configFile."pandoc" = { source = ../../config/pandoc; recursive = true; };
 
